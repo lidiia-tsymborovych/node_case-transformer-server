@@ -9,7 +9,7 @@ const SUPPORTED_CASES = ['SNAKE', 'KEBAB', 'CAMEL', 'PASCAL', 'UPPER'];
 function createServer() {
   return http.createServer((req, res) => {
     const [path, queryString] = req.url.split('?');
-    const text = path.slice(1);
+    const text = decodeURIComponent(path.slice(1));
     const params = new URLSearchParams(queryString);
     const toCase = params.get('toCase');
 
@@ -36,14 +36,14 @@ function createServer() {
 
     if (errors.length > 0) {
       res.statusCode = 400;
-      res.statusMessage = 'Bad Request';
+      res.statusMessage = 'Bad request';
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ errors }));
 
       return;
     }
 
-    const result = convertToCase(text, toCase);
+    const result = convertToCase(toCase, text);
 
     res.statusCode = 200;
     res.statusMessage = 'OK';
